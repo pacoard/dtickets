@@ -63,7 +63,7 @@ contract Ownable {
 		require(_newOwner != address(0));
 		emit OwnershipTransferred(owner, _newOwner);
 		owner = _newOwner;
-
+	}
 
 	// MORTAL FUNCTIONALITY
 		
@@ -71,4 +71,4 @@ contract Ownable {
 		selfdestruct(owner);
 	}
 
-	}
+}

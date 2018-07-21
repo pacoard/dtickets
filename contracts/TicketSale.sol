@@ -62,7 +62,9 @@ contract TicketSale is Ownable {
 		saleState = SaleState.Created;
 	}
 
+	// WARNING: gas cost can be extremely high (should keep qty VERY low)
 	function buyTicket(uint8 qty) external payable onSale {
+		// TODO force gas cost to be below a maximum (avoid gas wars) 
 		// enough money
 		require(msg.value >= qty*ticketPrice);
 		// not buying more tickets than allowed
@@ -80,16 +82,16 @@ contract TicketSale is Ownable {
 			nTickets++;
 		}
 
-		if (nTickets == maxTickets) {
+		if (nTickets >= maxTickets) {
 			saleState = SaleState.SoldOut;
 		}
 	}
 
-	function generateTicketID(address _address) private returns (uint256) {
+	function generateTicketID(address _address) private view returns (uint256) {
 		// NOTE: Hopefully, this way there will not be any tickets that have the same ID.
 		// Tickets are non refundable, so "nTickets" will never be the same number for 
 		// two different ticket orders. Should be safe for transfers as well.
-		return uint256(keccack256(_address, nTickets));
+		return uint256(keccak256(abi.encodePacked(_address, nTickets)));
 	}
 
 
@@ -115,10 +117,9 @@ contract TicketSale is Ownable {
 		ticketPrice = _ticketPrice;
 	}
 
-	function addMoreTickets(uint256 _nTickets) external onlyOwner {
+	function addMoreTickets(uint32 _nTickets) external onlyOwner {
 		nTickets += _nTickets;
 		saleState = SaleState.Sale;
 	}
-
 
 }
