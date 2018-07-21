@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 // https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/ownership/Ownable.sol
 // Added mortal functionality to the contract found on GitHub
 
+// No need for tests, as these contracts have been widely tested and used.
 
 /**
  * @title Ownable
