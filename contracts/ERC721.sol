@@ -5,7 +5,7 @@ pragma solidity ^0.4.24;
 /// @title ERC-721 Non-Fungible Token Standard
 /// @dev See https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
 ///  Note: the ERC-165 identifier for this interface is 0x80ac58cd.
-interface ERC721Interface /* is ERC165 */ {
+interface ERC721 /* is ERC165 */ {
     /// @dev This emits when ownership of any NFT changes by any mechanism.
     ///  This event emits when NFTs are created (`from` == 0) and destroyed
     ///  (`to` == 0). Exception: during contract creation, any number of NFTs

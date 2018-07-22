@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 
-import "./Ownable.sol";
+import "zeppelin/ownership/Ownable.sol";
 
 contract TicketSale is Ownable {
 
@@ -70,7 +70,7 @@ contract TicketSale is Ownable {
 		// not buying more tickets than allowed
 		require((maxTicketsPerPerson - getNumberOfTicketsByOwner(msg.sender)) >= qty);
 		// enough tickets left
-		require((maxTickets - nTickets) >= qty);
+		require((maxTickets - soldTickets) >= qty);
 
 		uint256 _ticketID;
 
@@ -89,7 +89,7 @@ contract TicketSale is Ownable {
 
 	function generateTicketID(address _address) private view returns (uint256) {
 		// NOTE: Hopefully, this way there will not be any tickets that have the same ID.
-		// Tickets are non refundable, so "nTickets" will never be the same number for 
+		// Tickets are non refundable, so "soldTickets" will never be the same number for 
 		// two different ticket orders. Should be safe for transfers as well.
 		return uint256(keccak256(abi.encodePacked(_address, soldTickets)));
 	}
@@ -120,6 +120,11 @@ contract TicketSale is Ownable {
 	function addMoreTickets(uint32 _nTickets) external onlyOwner {
 		maxTickets += _nTickets;
 		saleState = SaleState.Sale;
+	}
+
+	// A way to stop the sale and withdraw all the money
+	function kill() public onlyOwner {
+		selfdestruct(owner);
 	}
 
 }
