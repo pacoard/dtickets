@@ -1,3 +1,7 @@
 notes.java
 
 installed_contracts/
+
+build/
+
+lock.*
