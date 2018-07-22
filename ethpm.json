@@ -1,0 +1,23 @@
+{
+  "Name": "dtickets",
+  "version": "1.0.0",
+  "description": "ConsenSys Academy 2018 Final Project: Decentralized marketplace for tickets.",
+  "authors": [
+    "Paco García de la Corte <pacoard@gmail.com>"
+  ],
+  "keywords": [
+    "tickets",
+    "erc721",
+    "crowdsale",
+    "blockchain",
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "zeppelin"
+  ],
+  "dependencies": {
+    "zeppelin": "^1.0.4"
+  },
+  "license": "MIT"
+}
