@@ -9,22 +9,22 @@ contract TicketSale is Ownable {
 	mapping (address => uint256[]) ownerToTickets; // one person can buy more than one ticket
 
 	// Name of the event
-	string name;
+	string public name;
 
 	// Metadata stored on IPFS
-	string ipfsMetaData;
+	string public ipfsMetaData;
 
 	// Max number of tickets on sale
-	uint32 maxTickets;
+	uint32 public maxTickets;
 
 	// Max number of tickets that one person can buy
-	uint8 maxTicketsPerPerson;
+	uint8 public maxTicketsPerPerson;
 
 	// Number of sold tickets
-	uint32 nTickets;
+	uint32 public soldTickets;
 
 	// Price in wei per Ticket
-	uint256 ticketPrice;
+	uint256 public ticketPrice;
 
 	// State of the sale
 	enum SaleState { 
@@ -58,7 +58,7 @@ contract TicketSale is Ownable {
 		maxTicketsPerPerson = _maxTicketsPerPerson;
 		ticketPrice = _ticketPrice;
 
-		nTickets = 0; // not necessary?
+		soldTickets = 0; // not necessary?
 		saleState = SaleState.Created;
 	}
 
@@ -78,11 +78,11 @@ contract TicketSale is Ownable {
 			_ticketID = generateTicketID(msg.sender);
 			// update mappings
 			ticketToOwner[_ticketID] = msg.sender;
-			ownerToTickets[msg.sender][getNumberOfTicketsByOwner(msg.sender)] = _ticketID;
-			nTickets++;
+			ownerToTickets[msg.sender].push(_ticketID);
+			soldTickets++;
 		}
 
-		if (nTickets >= maxTickets) {
+		if (soldTickets >= maxTickets) {
 			saleState = SaleState.SoldOut;
 		}
 	}
@@ -91,12 +91,12 @@ contract TicketSale is Ownable {
 		// NOTE: Hopefully, this way there will not be any tickets that have the same ID.
 		// Tickets are non refundable, so "nTickets" will never be the same number for 
 		// two different ticket orders. Should be safe for transfers as well.
-		return uint256(keccak256(abi.encodePacked(_address, nTickets)));
+		return uint256(keccak256(abi.encodePacked(_address, soldTickets)));
 	}
 
 
-	function getNumberOfTicketsByOwner(address _ticketOwner) public view returns (uint256) {
-		return ownerToTickets[_ticketOwner].length;
+	function getNumberOfTicketsByOwner(address _ticketOwner) public view returns (uint8) {
+		return uint8(ownerToTickets[_ticketOwner].length);
 	}
 
 
@@ -118,7 +118,7 @@ contract TicketSale is Ownable {
 	}
 
 	function addMoreTickets(uint32 _nTickets) external onlyOwner {
-		nTickets += _nTickets;
+		maxTickets += _nTickets;
 		saleState = SaleState.Sale;
 	}
 
