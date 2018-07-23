@@ -62,20 +62,20 @@ contract TicketSale is Ownable {
 		saleState = SaleState.Created;
 	}
 
-	// WARNING: gas cost can be extremely high (should keep qty VERY low)
-	function buyTicket(uint8 qty) external payable onSale {
+	// WARNING: gas cost can be extremely high (should keep _nTickets VERY low)
+	function buyTicket(uint8 _nTickets) external payable onSale {
 		// TODO force gas cost to be below a maximum (avoid gas wars) 
 		// enough money
-		require(msg.value >= qty*ticketPrice);
+		require(msg.value >= _nTickets*ticketPrice);
 		// not buying more tickets than allowed
-		require((maxTicketsPerPerson - getNumberOfTicketsByOwner(msg.sender)) >= qty);
+		require((maxTicketsPerPerson - ownerToTickets[msg.sender].length) >= _nTickets);
 		// enough tickets left
-		require((maxTickets - soldTickets) >= qty);
+		require((maxTickets - soldTickets) >= _nTickets);
 
 		uint256 _ticketID;
 
-		for (uint8 i = 0; i < qty; i++) {
-			_ticketID = generateTicketID(msg.sender);
+		for (uint8 i = 0; i < _nTickets; i++) {
+			_ticketID = generateTicketID();
 			// update mappings
 			ticketToOwner[_ticketID] = msg.sender;
 			ownerToTickets[msg.sender].push(_ticketID);
@@ -87,16 +87,11 @@ contract TicketSale is Ownable {
 		}
 	}
 
-	function generateTicketID(address _address) private view returns (uint256) {
+	function generateTicketID() private view returns (uint256) {
 		// NOTE: Hopefully, this way there will not be any tickets that have the same ID.
 		// Tickets are non refundable, so "soldTickets" will never be the same number for 
 		// two different ticket orders. Should be safe for transfers as well.
-		return uint256(keccak256(abi.encodePacked(_address, soldTickets)));
-	}
-
-
-	function getNumberOfTicketsByOwner(address _ticketOwner) public view returns (uint8) {
-		return uint8(ownerToTickets[_ticketOwner].length);
+		return uint256(keccak256(abi.encodePacked(msg.sender, soldTickets)));
 	}
 
 
@@ -107,7 +102,11 @@ contract TicketSale is Ownable {
 		emit Sale();
 	}
 
-	// Circuit Breaker
+	
+	function setIpfsMetaData(string _ipfsMetaData) external onlyOwner {
+		ipfsMetaData = _ipfsMetaData;
+	}
+
 	function stopSale() public onlyOwner {
 		saleState = SaleState.Closed;
 		emit Closed();
@@ -118,8 +117,10 @@ contract TicketSale is Ownable {
 	}
 
 	function addMoreTickets(uint32 _nTickets) external onlyOwner {
+		// TODO: check possible overflow of maxTickets
+		// even though it should not happen, maybe revert if
+		// maxTickets + _nTickets > 2^256
 		maxTickets += _nTickets;
-		saleState = SaleState.Sale;
 	}
 
 	// A way to stop the sale and withdraw all the money
