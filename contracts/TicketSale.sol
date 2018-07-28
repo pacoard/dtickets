@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 
 import "zeppelin/ownership/Ownable.sol";
+import "zeppelin/math/SafeMath.sol";
 
 contract TicketSale is Ownable {
 
@@ -58,7 +59,6 @@ contract TicketSale is Ownable {
 		maxTicketsPerPerson = _maxTicketsPerPerson;
 		ticketPrice = _ticketPrice;
 
-		soldTickets = 0; // not necessary?
 		saleState = SaleState.Created;
 	}
 
@@ -117,9 +117,8 @@ contract TicketSale is Ownable {
 	}
 
 	function addMoreTickets(uint32 _nTickets) external onlyOwner {
-		// TODO: check possible overflow of maxTickets
-		// even though it should not happen, maybe revert if
-		// maxTickets + _nTickets > 2^256
+		// check possible overflow of maxTickets
+		require(maxTickets + _nTickets < 2**256);
 		maxTickets += _nTickets;
 	}
 
