@@ -8,8 +8,16 @@ import "./TicketSale.sol";
 contract TicketOwnership is TicketSale, ERC721, ERC165 {
 
 	mapping (bytes4 => bool) internal supportedInterfaces;
+	mapping (uint256 => address) approvals;
 
-	constructor() public {
+	//TicketSale modifier to inherit the contract
+	constructor(
+		string _name, 
+		string _ipfsMetaData, 
+		uint32 _maxTickets, 
+		uint8 _maxTicketsPerPerson, 
+		uint256 _ticketPrice
+	) public TicketSale(_name, _ipfsMetaData, _maxTickets, _maxTicketsPerPerson, _ticketPrice) { 
 		supportedInterfaces[this.supportsInterface.selector] = true;
 	}
 
@@ -23,7 +31,8 @@ contract TicketOwnership is TicketSale, ERC721, ERC165 {
 	event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
 
 	function balanceOf(address _owner) external view returns (uint256) {
-
+		require(_owner != address(0));
+		return ownerToTickets[_owner].length;
 	}
 
 	/// @notice Find the owner of an NFT
@@ -32,7 +41,9 @@ contract TicketOwnership is TicketSale, ERC721, ERC165 {
 	/// @param _tokenId The identifier for an NFT
 	/// @return The address of the owner of the NFT
 	function ownerOf(uint256 _tokenId) external view returns (address) {
-
+		address ticketOwner = ticketToOwner[_tokenId];
+    	require(ticketOwner != address(0));
+		return ticketToOwner[_tokenId];
 	}
 
 	/// @notice Transfers the ownership of an NFT from one address to another address

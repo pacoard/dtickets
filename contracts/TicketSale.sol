@@ -5,8 +5,8 @@ import "zeppelin/ownership/Ownable.sol";
 
 contract TicketSale is Ownable {
 
-	mapping (uint256 => address) ticketToOwner; 
-	mapping (address => uint256[]) ownerToTickets; // one person can buy more than one ticket
+	mapping (uint256 => address) public ticketToOwner; 
+	mapping (address => uint256[]) public ownerToTickets; // one person can buy more than one ticket
 
 	// Name of the event
 	string public name;
