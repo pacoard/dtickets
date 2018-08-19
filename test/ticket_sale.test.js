@@ -17,6 +17,56 @@ contract('TicketSale', function(accounts) {
 	const MAX_TICKETS_PER_PERSON = 8
 	const TICKET_PRICE = web3.toWei(1, "ether")
 
+	/*it("should change state variables of the contract", async () => {
+		// setIPFSdata
+		// addMoreTickets
+		// setTicketPrice
+
+		let ticketsale = await TicketSale.deployed()
+
+		// Check initial constructor parameters (max tickets per person already tested in the following test)
+		let curr_name = await ticketsale.name.call()
+		assert.equal(curr_name, NAME, 'initial name passed to constructor is wrong')
+		let curr_ipfshash = await ticketsale.ipfsMetaData.call()
+		assert.equal(curr_ipfshash, IPFS_HASH, 'initial IPFS hash passed to constructor is wrong')
+		let curr_maxtickets = await ticketsale.maxTickets.call()
+		assert.equal(curr_maxtickets.toNumber(), MAX_TICKETS, 'initial max tickets number passed to constructor is wrong')
+		let curr_ticketprice = await ticketsale.ticketPrice.call()
+		assert.equal(curr_ticketprice.toNumber(), TICKET_PRICE, 'initial ticket price passed to constructor is wrong')
+
+		// Check setter methods (should be accessible only by the owner)
+
+		// SET IPFS META DATA
+		await tryCatch(
+        	ticketsale.setIpfsMetaData.call("new hash", {from: ALICE}), errTypes.revert
+        )
+		await ticketsale.setIpfsMetaData.call("new hash", {from: OWNER})
+		
+
+		// ADD MORE TICKETS
+		await tryCatch(
+        	ticketsale.addMoreTickets.call(10, {from: ALICE}), errTypes.revert
+        )
+		await ticketsale.addMoreTickets.call(10, {from: OWNER})
+		
+
+		// CHANGE TICKET PRICE
+		await tryCatch(
+        	ticketsale.setTicketPrice.call(web3.toWei(3, "ether"), {from: ALICE}), errTypes.revert
+        )
+		await ticketsale.setTicketPrice.call(web3.toWei(3, "ether"), {from: OWNER})
+		
+
+
+		curr_ipfshash = await ticketsale.ipfsMetaData.call()
+		assert.equal(await ticketsale.ipfsMetaData.call(), "new hash", 'check setIpfsMetaData method')
+		curr_maxtickets = await ticketsale.maxTickets.call()
+		assert.equal(curr_maxtickets.toNumber(), MAX_TICKETS + 10, 'check addMoreTickets method')
+		curr_ticketprice = await ticketsale.ticketPrice.call()
+		assert.equal(curr_ticketprice.toNumber().toString(), web3.toWei(3, "ether"), 'check setTicketPrice method')
+
+	});*/
+
 
 	it("should manage normal and edge cases of buying tickets", async () => {
 		let ticketsale = await TicketSale.deployed()
@@ -92,19 +142,6 @@ contract('TicketSale', function(accounts) {
 		await ticketsale.buyTicket( 2, {value: 2e+18, from: BOB})
 		bobBalance = await ticketsale.balanceOf.call(BOB)
 		assert.equal(bobBalance.toNumber(), 2, 'ticket balance incorrect, check buyTicket method');
-	});
-
-	it("should change state variables of the contract", async () => {
-		// setIPFSdata
-		// addMoreTickets
-		// setTicketPrice
-
-		let ticketsale = await TicketSale.deployed()
-
-		// Check initial constructor parameters
-		let current_name, 
-
-
 	});
 
 

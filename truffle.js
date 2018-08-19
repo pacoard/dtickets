@@ -20,7 +20,7 @@ module.exports = {
   		host: "127.0.0.1",
   		port: 8545, //ganache
   		//port: 7545, //truffle develop
-  		network_id: "*"
+  		network_id: "5777"
   	}
   }
 };
