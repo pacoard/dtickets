@@ -104,13 +104,20 @@ contract TicketOwnership is TicketSale, ERC721, ERC165 {
 	    // Delete token
 	    for (uint i = 0; i < ownerToTickets[_from].length-1; i++){
             if (ownerToTickets[_from][i] == _tokenId) {
-            	// delete token
+            	/*// delete token
             	delete ownerToTickets[_from][i];
             	// fill the empty spot with the last element
             	ownerToTickets[_from][i] = ownerToTickets[_from][ownerToTickets[_from].length-1];
             	// delete last element
             	delete ownerToTickets[_from][ownerToTickets[_from].length-1];
             	// stop loop, we already found the ticket to delete
+            	ownerToTickets[_from].length--;
+            	*/
+            	// BETTER WAY
+            	// Assign last token to the token we are transferring
+            	ownerToTickets[_from][i] = ownerToTickets[_from][ownerToTickets[_from].length-1];
+            	// Delete duplicate token at the end
+            	ownerToTickets[_from].length--;
             	break;
             }
         }
@@ -181,6 +188,10 @@ contract TicketOwnership is TicketSale, ERC721, ERC165 {
 	      getApproved(_tokenId) == _spender ||
 	      isApprovedForAll(token_owner, _spender)
 	    );
+  	}
+
+  	function ticketsOf(address _owner) external view returns (uint256[]) {
+  		return ownerToTickets[_owner];
   	}
 
 }
