@@ -5,3 +5,5 @@ installed_contracts/
 build/
 
 lock.*
+
+contract_object.java

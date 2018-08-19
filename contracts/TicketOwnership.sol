@@ -18,6 +18,7 @@ contract TicketOwnership is TicketSale, ERC721, ERC165 {
 		uint8 _maxTicketsPerPerson, 
 		uint256 _ticketPrice
 	) public TicketSale(_name, _ipfsMetaData, _maxTickets, _maxTicketsPerPerson, _ticketPrice) { 
+		//ERC165 compliant: supports ER721 interface
 		supportedInterfaces[this.supportsInterface.selector] = true;
 	}
 

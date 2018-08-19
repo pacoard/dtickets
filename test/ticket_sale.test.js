@@ -1,74 +1,110 @@
-var TicketSale = artifacts.require("./TicketSale.sol");
+const TicketSale = artifacts.require("./TicketOwnership.sol") //need ownership methods for test purposes
+const tryCatch = require("./exceptions.js").tryCatch //for testing reverts
+const errTypes = require("./exceptions.js").errTypes
 	
 contract('TicketSale', function(accounts) {
 
 	// accounts
 	const OWNER = accounts[0]
-	const ALICE = accounts[1];
-	const BOBO = accounts[2];
+	const ALICE = accounts[1]
+	const BOB = accounts[2]
 
 	// constructor initial parameters
-	const NAME = "Nirvana - Wrigley Field";
-	const IPFS_HASH = 'ipfshash';
-	const MAX_TICKETS = 50;
-	const MAX_TICKETS_PER_PERSON = 8;
-	const TICKET_PRICE = web3.toWei(1, "ether");
+	// deployer.deploy(TicketSale, "Nirvana - Wrigley Field", "ipfshash", 50, 8, web3.toWei(1, "ether"));
+	const NAME = "Nirvana - Wrigley Field"
+	const IPFS_HASH = 'ipfshash'
+	const MAX_TICKETS = 50
+	const MAX_TICKETS_PER_PERSON = 8
+	const TICKET_PRICE = web3.toWei(1, "ether")
 
 
-	it("should correctly manage the state of the sale", async () => {
-		const ticketsale = await TicketSale.deployed();
+	it("should manage normal and edge cases of buying tickets", async () => {
+		let ticketsale = await TicketSale.deployed()
+		// State of the contract should be "created" so it should not be possible to buy a ticket
+        /*assert*/await tryCatch(
+        	ticketsale.buyTicket( 2, {value: 2e+18, from: ALICE}), errTypes.revert
+        )
 
-		await bank.enroll({from: alice});
-		await bank.enroll({from: bob});
+        // Start sale, emits event
+		await ticketsale.startSale({from: OWNER})
+		
+		// Alice tries to buy 2 tickets with little money
+		/*assert*/await tryCatch(
+			ticketsale.buyTicket( 2, {value: 1e+18, from: ALICE}), errTypes.revert
+		)
+		
+		// Alice tries to buy more tickets than allowed per person
+		/*assert*/await tryCatch(
+			ticketsale.buyTicket( MAX_TICKETS_PER_PERSON + 1, {value: MAX_TICKETS_PER_PERSON*1e+18, from: ALICE}), errTypes.revert
+		)
+		
+		// Alice buys 2 tickets with the right amount of money
+ 		await ticketsale.buyTicket( 2, {value: 2e+18, from: ALICE})
+		aliceBalance = await ticketsale.balanceOf.call(ALICE)
+		assert.equal(aliceBalance.toNumber(), 2, 'ticket balance incorrect, check buyTicket method')
 
-		const aliceBalance = await bank.balance({from: alice});
-		assert.equal(aliceBalance, 1000, 'enroll balance is incorrect, check balance method or constructor');
+		// Alice tries again to buy more tickets than allowed, now that she has two
+		/*assert*/await tryCatch(
+			ticketsale.buyTicket( MAX_TICKETS_PER_PERSON, {value: MAX_TICKETS_PER_PERSON*1e+18, from: ALICE}), errTypes.revert
+		)
 
-		const bobBalance = await bank.balance({from: bob});
-		assert.equal(bobBalance, 1000, 'enroll balance is incorrect, check balance method or constructor');
+		// Sale is stopped
+		await ticketsale.stopSale({from: OWNER})
+		
+		// Bob tries to buy tickets, but the sale has stopped
+		/*assert*/await tryCatch(
+			ticketsale.buyTicket( 1, {value: 1e+18, from: BOB}), errTypes.revert
+		)
 
-		const ownerBalance = await bank.balance({from: owner});
-		assert.equal(ownerBalance, 0, 'only enrolled users should have balance, check balance method or constructor')
+		// Sale starts again and tickets are sold out
+		await ticketsale.startSale({from: OWNER})
+		let soldTickets
+		async function checkTickets(n) {
+			soldTickets = await ticketsale.soldTickets.call()
+			assert.equal(soldTickets.toNumber(), n, 'incorrect number of sold tickets, check buyTicket method')
+		} 
+		await checkTickets(2)
+		await ticketsale.buyTicket( 6, {value: 6e+18, from: ALICE}) // 8 tickets sold
+		await checkTickets(8)
+		await ticketsale.buyTicket( 8, {value: 8e+18, from: accounts[3]}) // 16
+		await checkTickets(16)
+		await ticketsale.buyTicket( 8, {value: 8e+18, from: accounts[4]}) // 24
+		await checkTickets(24)
+		await ticketsale.buyTicket( 8, {value: 8e+18, from: accounts[5]}) // 32
+		await checkTickets(32)
+		await ticketsale.buyTicket( 8, {value: 8e+18, from: accounts[6]}) // 40
+		await checkTickets(40)
+		await ticketsale.buyTicket( 8, {value: 8e+18, from: accounts[7]}) // 48
+		await checkTickets(48)
+		await ticketsale.buyTicket( 2, {value: 2e+18, from: accounts[8]}) // 50
+		await checkTickets(50)
+
+		// Bob tries to buy tickets, but they are sold out
+		/*assert*/await tryCatch(
+			ticketsale.buyTicket( 5, {value: 5e+18, from: BOB}), errTypes.revert
+		)
+
+		// Owner adds more tickets
+		await ticketsale.addMoreTickets(5, {from: OWNER})
+		await ticketsale.startSale({from: OWNER})
+
+		// Bob can now buy those tickets
+		await ticketsale.buyTicket( 2, {value: 2e+18, from: BOB})
+		bobBalance = await ticketsale.balanceOf.call(BOB)
+		assert.equal(bobBalance.toNumber(), 2, 'ticket balance incorrect, check buyTicket method');
 	});
 
 	it("should change state variables of the contract", async () => {
-		const bank = await SimpleBank.deployed();
-		const deposit = web3.toBigNumber(2);
+		// setIPFSdata
+		// addMoreTickets
+		// setTicketPrice
 
-		await bank.enroll({from: alice});
-		await bank.enroll({from: bob});
+		let ticketsale = await TicketSale.deployed()
 
-		await bank.deposit({from: alice, value: deposit});
-		const balance = await bank.balance({from: alice});
-		assert.equal(deposit.plus(1000).toString(), balance, 'deposit amount incorrect, check deposit method');
+		// Check initial constructor parameters
+		let current_name, 
 
-		const expectedEventResult = {accountAddress: alice.address, amount: deposit};
 
-		const LogDepositMade = await bank.allEvents();
-		const log = await new Promise(function(resolve, reject) {
-				LogDepositMade.watch(function(error, log){ resolve(log);});
-		});
-
-		const logAccountAddress = log.args.accountAddress;
-		const logAmount = log.args.amount;
-		assert.equal(expectedEventResult.accountAddress, expectedEventResult.accountAddress, "LogDepositMade event accountAddress property not emmitted, check deposit method");
-		assert.equal(expectedEventResult.amount, expectedEventResult.amount, "LogDepositMade event amount property not emmitted, check deposit method");
-	});
-
-	it("should cover normal and edge cases of buying tickets", async () => {
-		const bank = await SimpleBank.deployed();
-		const deposit = web3.toBigNumber(2);
-		const initialAmount = 1000;
-
-		await bank.enroll({from: alice});
-		await bank.enroll({from: bob});
-
-		await bank.deposit({from: alice, value: deposit});
-		await bank.withdraw(deposit, {from: alice});
-
-		const balance = await bank.balance({from: alice});
-
-		assert.equal(initialAmount.toString(), balance, 'withdraw amount incorrect, check withdraw method');
 	});
 
 
