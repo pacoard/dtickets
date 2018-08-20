@@ -28,16 +28,17 @@ contract('TicketSale', function(accounts) {
 		// setIPFSdata
 		// addMoreTickets
 		// setTicketPrice
-/*
+
 		// Check initial constructor parameters (max tickets per person already tested in the following test)
 		let curr_name = await t_sale.name()
 		assert.equal(curr_name, NAME, 'initial name passed to constructor is wrong')
+		//expect(curr_name).to.equal(NAME)
 		let curr_ipfshash = await t_sale.ipfsMetaData()
 		assert.equal(curr_ipfshash, IPFS_HASH, 'initial IPFS hash passed to constructor is wrong')
 		let curr_maxtickets = await t_sale.maxTickets()
 		assert.equal(curr_maxtickets.toNumber(), MAX_TICKETS, 'initial max tickets number passed to constructor is wrong')
 		let curr_ticketprice = await t_sale.ticketPrice()
-		assert.equal(curr_ticketprice.toNumber(), TICKET_PRICE, 'initial ticket price passed to constructor is wrong')
+		assert.equal(curr_ticketprice.toNumber().toString(), TICKET_PRICE, 'initial ticket price passed to constructor is wrong')
 
 		// Check setter methods (should be accessible only by the owner)
 
@@ -69,7 +70,9 @@ contract('TicketSale', function(accounts) {
 		assert.equal(curr_maxtickets.toNumber(), MAX_TICKETS + 10, 'check addMoreTickets method')
 		curr_ticketprice = await t_sale.ticketPrice()
 		assert.equal(curr_ticketprice.toNumber().toString(), web3.toWei(3, "ether"), 'check setTicketPrice method')
-*/
+
+		// Set price back to what it was for the next tests
+		await t_sale.setTicketPrice(TICKET_PRICE, {from: OWNER})
 	})
 
 
@@ -130,8 +133,10 @@ contract('TicketSale', function(accounts) {
 		await checkTickets(40)
 		await t_sale.buyTicket( 8, {value: 8e+18, from: accounts[7]}) // 48
 		await checkTickets(48)
-		await t_sale.buyTicket( 2, {value: 2e+18, from: accounts[8]}) // 50 => max tickets sold
-		await checkTickets(50)
+		await t_sale.buyTicket( 8, {value: 8e+18, from: accounts[8]}) // 56
+		await checkTickets(56)
+		await t_sale.buyTicket( 4, {value: 4e+18, from: accounts[9]}) // 60 => max tickets sold
+		await checkTickets(60)
 
 		// Bob tries to buy tickets, but they are sold out
 		/*assert*/await tryCatch(

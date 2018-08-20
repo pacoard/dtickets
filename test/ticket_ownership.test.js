@@ -19,45 +19,58 @@ contract('TicketOwnership', function(accounts) {
 
 	// contract to interact with
 	let t_ownership
+	let initialAliceTickets, initialAliceBalance
+	let initialBobTickets, initialBobBalance
 
-	beforeEach('setup contract for each test', async function () {
+	beforeEach('set Alice and Bob as owners of some tickets', async function () {
         t_ownership = await TicketOwnership.deployed()
 		await t_ownership.startSale({from: OWNER})
 
 		// buyTicket method tested in ticket_sale.test.js
 		await t_ownership.buyTicket( 2, {value: 2e+18, from: ALICE})
 		await t_ownership.buyTicket( 1, {value: 1e+18, from: BOB})
+
+		initialAliceTickets = getTicketIDs(await t_ownership.ticketsOf(ALICE))
+		initialBobTickets = getTicketIDs(await t_ownership.ticketsOf(BOB))
+		
+		initialAliceBalance = (await t_ownership.balanceOf(ALICE)).toNumber()
+		initialBobBalance = (await t_ownership.balanceOf(BOB)).toNumber()
     })
 
 	// test ownerOf and balanceOf
-	it("should get owner by ticket and balance of owners", async () => {
-
-		let aliceTickets = getTicketIDs(await t_ownership.ticketsOf(ALICE))
-		let bobTickets = getTicketIDs(await t_ownership.ticketsOf(BOB))
-		
-		let aliceBalance = await t_ownership.balanceOf(ALICE)
-		let bobBalance = await t_ownership.balanceOf(BOB)
+	it("should get owner by ticket", async () => {
 
 		// test balanceOf
-		assert.equal(aliceTickets.length, aliceBalance, 'check balanceOf method')
-		assert.equal(bobTickets.length, bobBalance, 'check balanceOf method')
+		expect(initialAliceTickets.length).to.equal(initialAliceBalance)
+		expect(initialBobTickets.length).to.equal(initialBobBalance)
 
 		// test ownerOf
-		assert.equal(await t_ownership.ownerOf(aliceTickets[0]), ALICE, 'check ownerOf')
-		assert.equal(await t_ownership.ownerOf(aliceTickets[1]), ALICE, 'check ownerOf')
-		assert.equal(await t_ownership.ownerOf(bobTickets[0]), BOB, 'check ownerOf')
-
+		expect(await t_ownership.ownerOf(initialAliceTickets[0])).to.equal(ALICE)
+		expect(await t_ownership.ownerOf(initialAliceTickets[1])).to.equal(ALICE)
+		expect(await t_ownership.ownerOf(initialBobTickets[0])).to.equal(BOB)
 	})
 
-	// test approvals
-	it("should properly handle approvals", async () => {
+	// test balanceOf
+	it("should get balance of owners", async () => {
 
-
+		// test balanceOf
+		expect(initialAliceTickets.length).to.equal(initialAliceBalance)
+		expect(initialBobTickets.length).to.equal(initialBobBalance)
 	})
 
 	// test transfer of tokens
-	it("should properly handle token transfers", async () => {
+	it("should handle token transfers", async () => {
 
+		// Approve a transfer - Alice wants to send a ticket to Bob
+		await t_ownership.approve(BOB, initialAliceTickets[0], {from: ALICE})
+		// Execute transfer
+		await t_ownership.transferFrom(ALICE, BOB, initialAliceTickets[0], {from: ALICE})
+		
+		// The ticket should now belong to Bob
+		expect(await t_ownership.ownerOf(initialAliceTickets[0])).to.equal(BOB)
+		// Bob's balance should have increased by 1 ticket
+		let newBobBalance = (await t_ownership.balanceOf(BOB)).toNumber()
+		expect(newBobBalance).to.equal(initialBobBalance+1)
 	})
 
 })

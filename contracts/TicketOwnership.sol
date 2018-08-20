@@ -122,8 +122,6 @@ contract TicketOwnership is TicketSale, ERC721, ERC165 {
             }
         }
 
-    	ticketToOwner[_tokenId] = address(0);
-
     	// Add token
 	    ticketToOwner[_tokenId] = _to;
 		ownerToTickets[_to].push(_tokenId);
@@ -141,6 +139,9 @@ contract TicketOwnership is TicketSale, ERC721, ERC165 {
 		address token_owner = ownerOf(_tokenId);
 	    require(_approved != token_owner);
 	    require(msg.sender == token_owner || isApprovedForAll(token_owner, msg.sender));
+
+	    // The receiver of the token can't possess more tokens than maxTicketsPerPerson
+	    require(ownerToTickets[_approved].length < maxTicketsPerPerson);
 
 	    tokenApprovals[_tokenId] = _approved;
 	    emit Approval(token_owner, _approved, _tokenId);

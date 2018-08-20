@@ -122,7 +122,7 @@ contract TicketSale is Ownable {
 	}
 
 	// A way to stop the sale and withdraw all the money
-	function kill() public onlyOwner {
+	function kill() external onlyOwner {
 		selfdestruct(owner);
 	}
 
