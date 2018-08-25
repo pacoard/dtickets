@@ -1,5 +1,3 @@
-// https://gist.github.com/cipherzzz/fe4703c27e79c31b345870aafdd98391#file-erc721-spec-js
-
 const TicketOwnership = artifacts.require("./TicketOwnership.sol") //need ownership methods for test purposes
 const tryCatch = require("./exceptions.js").tryCatch //for testing reverts
 const errTypes = require("./exceptions.js").errTypes
@@ -11,6 +9,9 @@ function getTicketIDs(bns) {
 	return bns
 }
 
+// This will mainly focus on the Solidity code that had to be added to a Open Zeppelin's 
+// ERC721 implementation, therefore, methods: balanceOf, ownerOf and transferFrom 
+// (works for the other safeTransfer methods)
 contract('TicketOwnership', function(accounts) {
 	// accounts
 	const OWNER = accounts[0]
@@ -22,7 +23,7 @@ contract('TicketOwnership', function(accounts) {
 	let initialAliceTickets, initialAliceBalance
 	let initialBobTickets, initialBobBalance
 
-	beforeEach('set Alice and Bob as owners of some tickets', async function () {
+	beforeEach('make Alice and Bob buy some tickets', async function () {
         t_ownership = await TicketOwnership.deployed()
 		await t_ownership.startSale({from: OWNER})
 

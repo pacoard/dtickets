@@ -3,6 +3,14 @@ pragma solidity ^0.4.24;
 
 import "zeppelin/ownership/Ownable.sol";
 
+
+/**
+  * @title Ticket Sale
+  * This contract contains the sale logic. Mainly methods for
+  *	the owner to manipulate the sale, mappings with the necessary
+  *	information to keep track of the owners, parameters of the
+  *	sale and a function for customers to buy tickets
+  */
 contract TicketSale is Ownable {
 
 	mapping (uint256 => address) public ticketToOwner; 
@@ -62,6 +70,14 @@ contract TicketSale is Ownable {
 	}
 
 	// WARNING: gas cost can be extremely high (should keep _nTickets VERY low)
+	/**
+	  * @notice Buys _nTickets for msg.sender
+	  * @dev Throws if: 
+	  * - not enough ether was sent
+	  * - client would end up having more tickets than allowed
+	  * - there are not enough tickets on sale
+	  * @param _nTickets the number of tickets to buy
+	  */
 	function buyTicket(uint8 _nTickets) external payable onSale {
 		// TODO force gas cost to be below a maximum (avoid gas wars) 
 		// enough money
@@ -86,6 +102,10 @@ contract TicketSale is Ownable {
 		}
 	}
 
+	/**
+	  * @notice Generates a unique uint256 ID for the last sold ticket
+	  * @return keccak256 of msg.sender and the number of sold tickets
+	  */
 	function generateTicketID() private view returns (uint256) {
 		// NOTE: Hopefully, this way there will not be any tickets that have the same ID.
 		// Tickets are non refundable, so "soldTickets" will never be the same number for 
@@ -95,22 +115,53 @@ contract TicketSale is Ownable {
 
 
 	// ONLY OWNER FUNCTIONS
-
+	/**
+	  * @notice Generates a unique uint256 ID for the last sold ticket
+	  * @dev Throws if: 
+	  * - not enough ether was sent
+	  * - client would end up having more tickets than allowed
+	  * - there are not enough tickets on sale
+	  * @param _nTickets the number of tickets to buy
+	  * @return keccak256 of msg.sender and the number of sold tickets
+	  */
 	function startSale() external onlyOwner {
 		saleState = SaleState.Sale;
 		emit Sale();
 	}
-
-	
+	/**
+	  * @notice Generates a unique uint256 ID for the last sold ticket
+	  * @dev Throws if: 
+	  * - not enough ether was sent
+	  * - client would end up having more tickets than allowed
+	  * - there are not enough tickets on sale
+	  * @param _nTickets the number of tickets to buy
+	  * @return keccak256 of msg.sender and the number of sold tickets
+	  */
 	function setIpfsMetaData(string _ipfsMetaData) external onlyOwner {
 		ipfsMetaData = _ipfsMetaData;
 	}
-
+	/**
+	  * @notice Generates a unique uint256 ID for the last sold ticket
+	  * @dev Throws if: 
+	  * - not enough ether was sent
+	  * - client would end up having more tickets than allowed
+	  * - there are not enough tickets on sale
+	  * @param _nTickets the number of tickets to buy
+	  * @return keccak256 of msg.sender and the number of sold tickets
+	  */
 	function stopSale() public onlyOwner {
 		saleState = SaleState.Closed;
 		emit Closed();
 	}
-
+	/**
+	  * @notice Generates a unique uint256 ID for the last sold ticket
+	  * @dev Throws if: 
+	  * - not enough ether was sent
+	  * - client would end up having more tickets than allowed
+	  * - there are not enough tickets on sale
+	  * @param _nTickets the number of tickets to buy
+	  * @return keccak256 of msg.sender and the number of sold tickets
+	  */
 	function setTicketPrice(uint256 _ticketPrice) external onlyOwner {
 		ticketPrice = _ticketPrice;
 	}
@@ -122,6 +173,15 @@ contract TicketSale is Ownable {
 	}
 
 	// A way to stop the sale and withdraw all the money
+	/**
+	  * @notice Generates a unique uint256 ID for the last sold ticket
+	  * @dev Throws if: 
+	  * - not enough ether was sent
+	  * - client would end up having more tickets than allowed
+	  * - there are not enough tickets on sale
+	  * @param _nTickets the number of tickets to buy
+	  * @return keccak256 of msg.sender and the number of sold tickets
+	  */
 	function kill() external onlyOwner {
 		selfdestruct(owner);
 	}
