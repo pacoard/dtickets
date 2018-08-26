@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="/">
+    <title>ITMO 544</title>
+    <base href="/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css">
+  </head>
+ <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">ConsenSys Academy Final Project: Decentralized Marketplace of tickets</a>
+      </div>
+        <ul class="nav navbar-nav nav-tabs">
+          
+          <li><a href="/">Refresh data</a></li>
+          <!--<li><a href="/gallery">Gallery</a></li>
+          -->
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="https://github.com/pacoard/dtickets">Github</a></li>
+        </ul>
+    </div>
+  </nav>
+  <body style="padding-right: 20px; padding-left: 20px;">
+
+<div class="row">
+
+<div class="col-sm-4" style="padding-right: 30px; padding-left: 30px;">
+  <div class="row">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <h3 class="panel-title"><strong>Web3</strong></h3>
+      </div>
+      <div class="panel-body">
+      <!--  <% queue.forEach(function(p) { %>-->
+        <p><strong>ID: </strong><%= job.id %> => <strong>Status: </strong><% if (job.status == 1) { %><a style="color:green;">Done</a><% } else if (job.status == 0) { %><a style="color:red;">Pending</a><% } %></p>
+          <p><strong>Enabled</strong>: Disabled</p>
+          <p><strong>Current network</strong>: rinkeby (testnet), local...</p>
+          <p><strong>Account</strong>: 0xAFD045FE...</p>
+       <!-- <% }); %>-->
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="panel panel-success">
+      <div class="panel-heading">
+        <h3 class="panel-title"><strong>Tickets Contract</strong></h3>
+      </div>
+      <div class="panel-body">
+       <!-- <% jobs.forEach(function(job) { %>-->
+          <div class="form-group row">
+            <!--<label for="example-search-input" class="col-2 col-form-label">Search</label> -->
+            <div class="col-10">
+              <input class="form-control" type="search" value="Enter contract address" id="example-search-input">
+            </div>
+          </div>
+          <p><strong>Loading...</strong></p>
+       <!-- <% }); %>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="col-sm-8">
+  <div class="panel panel-success">
+    <div class="panel-heading">
+      <h3 class="panel-title"><strong>EC2 Instances metrics (last 10 minutes)</strong></h3>
+    </div>
+    <br>
+    <div class="col-sm-12" style="padding-right: 30px; padding-left: 30px;">
+      <div class="card border-success">
+          <div class="card-body">
+            <h4><strong>Frontend (3 instances)</strong></h4>
+            <blockquote class="card-blockquote" style="font-size: 0.9em;">
+              <!-- frontendDataHTML -->
+               <!--  <% frontend.forEach(function(instance) { %>-->
+                  <p><strong><%= instance.metric %></strong>: <%= instance.values %></p>
+                <!-- <% }); %>-->
+            </blockquote>
+          </div>
+      </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="col-sm-6">
+        <div class="card border-success">
+        <div class="card-body">
+          <h4><strong>Backend (1 instance)</strong></h4>
+          <blockquote class="card-blockquote" style="font-size: 0.9em;">
+            <!-- backendDataHTML -->
+           <!-- <% backend.forEach(function(instance) { %>-->
+              <p><strong><%= instance.metric %></strong>: <%= instance.values %></p>
+           <!-- <% }); %>-->
+          </blockquote>
+        </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="card border-success">
+        <div class="card-body">
+          <h4><strong>Dashboard (1 instance)</strong></h4>
+          <blockquote class="card-blockquote" style="font-size: 0.9em;">
+            <!-- dashboardDataHTML -->
+          <!--  <% dashboard.forEach(function(instance) { %>-->
+              <p><strong><%= instance.metric %></strong>: <%= instance.values %></p>
+          <!--  <% }); %>-->
+          </blockquote>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+  </body>
+</html>

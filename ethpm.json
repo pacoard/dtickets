@@ -14,7 +14,8 @@
     "ethereum",
     "smart",
     "contracts",
-    "zeppelin"
+    "zeppelin",
+    "ipfs"
   ],
   "dependencies": {
     "zeppelin": "^1.0.4"
