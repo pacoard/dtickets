@@ -1,20 +1,13 @@
-export function selectSideElement(sideElement) {
+export function setWeb3Action(web3) {
 	return {
-		type: 'SELECT_SIDE_ELEMENT',
-		sideElementName: sideElement.props.name,
-	};
-} 
-
-export function switchUser(userEmail) {
-	return {
-		type: 'SWITCH_USER',
-		userEmail: userEmail,
+		type: 'SET_WEB3',
+		web3: web3
 	};
 }
 
-export function notification(notification) {
+export function setTicketContractAction(ticketContract) {
 	return {
-		type: 'NOTIFICATION',
-		notification: notification,
+		type: 'SET_TICKET_CONTRACT',
+		ticketContract: ticketContract
 	}
 }

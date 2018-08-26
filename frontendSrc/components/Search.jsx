@@ -1,7 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import { setTicketContractAction } from '../actions/actions'
+
 class Search extends React.Component {
+	constructor(props) {
+		super(props);
+	}
 	render() {
 		return (
 			<div className="row">
@@ -12,7 +17,7 @@ class Search extends React.Component {
 					<div className="panel-body">
 							<div className="form-group row">
 								<div className="col-10">
-									<input className="form-control" type="search" value="Enter contract address" id="example-search-input"/>
+									<input className="form-control" type="search" placeholder="Enter ticket contract address" id="example-search-input"/>
 								</div>
 							</div>
 							<p><strong>Loading...</strong></p>
@@ -23,4 +28,13 @@ class Search extends React.Component {
 	}
 }
 
-export default Search
+const mapStateToProps = (state) => ({
+	web3: state.web3,
+	ticketContract: state.ticketContract
+});
+
+const mapDispatchToProps = (dispatch) => ({
+	setTicketContract: setTicketContractAction
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

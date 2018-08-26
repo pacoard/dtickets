@@ -2,6 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 class Dashboard extends React.Component {
+	constructor(props) {
+		super(props);
+	}
 	render() {
 		return (
 			<div className="col-sm-8">
@@ -49,4 +52,8 @@ class Dashboard extends React.Component {
 	}
 }
 
-export default Dashboard
+const mapStateToProps = (state) => ({
+	ticketContract: state.ticketContract
+});
+
+export default connect(mapStateToProps)(Dashboard);

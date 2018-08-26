@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import NavBar from './NavBar'
 import Web3State from './Web3State'
@@ -7,7 +8,7 @@ import Search from './Search'
 
 class App extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 	}
 
 	render() {
@@ -27,5 +28,11 @@ class App extends React.Component {
 }
 
 
+// Support React+Redux
+const mapStateToProps = (state) => ({
+	web3: state.web3,
+	ticketContract: state.ticketContract
+});
 
+//export default connect(mapStateToProps)(App);
 export default App;
