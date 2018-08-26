@@ -8,43 +8,40 @@
     "clean": "rimraf dist",
     "production": "cross-env npm run clean && webpack --config webpack.production.config.js --progress --profile --colors",
     "lint": "eslint ./frontendSrc/**/**.js",
-    "precommit": "cross-env npm run lint",
-    "prepush": "cross-env npm run lint",
     "webpack:dev": "webpack --colors",
     "webpack:prod": "webpack --config webpack.production.config.js --colors"
   },
-  "author": "Kliment Petrov <kleopetroff@gmail.com>",
+  "author": "Paco García de la Corte <pacoard@gmail.com>",
   "license": "MIT",
-  "jest": {
-    "setupFiles": [
-      "<rootDir>/config/jest/shim.js"
-    ],
-    "collectCoverageFrom": [
-      "frontendSrc/**/*.{js,jsx,ts,tsx}"
-    ],
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/jest/assetsTransformer.js",
-      "\\.(css|less)$": "<rootDir>/config/jest/assetsTransformer.js"
-    },
-    "testMatch": [
-      "**/?(*.)(spec|test).js?(x)"
-    ],
-    "transform": {
-      "\\.js$": "babel-jest"
-    }
-  },
+  "repository": "https://github.com/pacoard/dtickets",
+  "keywords": [
+    "react",
+    "webpack",
+    "redux",
+    "tickets",
+    "erc721",
+    "crowdsale",
+    "blockchain",
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "zeppelin",
+    "ipfs"
+  ],
   "dependencies": {
     "cross-env": "5.2.0",
     "react": "16.4.2",
     "react-dom": "16.4.2",
     "react-hot-loader": "4.3.5",
-    "react-router-dom": "4.3.0"
+    "react-redux": "^5.0.7",
+    "react-router-dom": "4.3.0",
+    "redux": "^4.0.0"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
     "babel-eslint": "8.2.6",
-    "babel-jest": "23.0.1",
     "babel-loader": "7.1.4",
     "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "6.24.1",
@@ -67,7 +64,6 @@
     "file-loader": "1.1.11",
     "html-webpack-plugin": "3.2.0",
     "husky": "0.15.0-rc.2",
-    "jest": "22.1.0",
     "node-sass": "4.9.3",
     "open-browser-webpack-plugin": "0.0.5",
     "react-addons-test-utils": "15.6.2",

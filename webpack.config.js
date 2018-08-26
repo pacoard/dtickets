@@ -18,7 +18,6 @@ const config = {
     'webpack-dev-server/client?http://localhost:8080',
     'webpack/hot/only-dev-server',
     './main.jsx',
-    './assets/scss/main.scss',
   ],
 
   output: {
@@ -42,12 +41,12 @@ const config = {
 
   module: {
     rules: [
-      {
+      /*{
         enforce: "pre",
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: "eslint-loader"
-      },
+      },*/
       {
         test: /\.jsx?$/,
         loaders: [
