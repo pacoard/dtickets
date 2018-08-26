@@ -13,7 +13,8 @@ node_modules/
 npm-debug.log
 
 # Bundled react code with webpack
-frontendBuild/reactapp.bundle.js
+frontendBuild/*.js
+frontendPublic/
 
 # Personal files for reference
 notes.java

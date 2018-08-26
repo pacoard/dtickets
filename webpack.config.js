@@ -54,7 +54,7 @@ const config = {
         ],
         exclude: /node_modules/,
       },
-      {
+      /*{
         test: /\.scss$/,
         exclude: /node_modules/,
         use: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
@@ -70,7 +70,7 @@ const config = {
           ],
           publicPath: '../'
         })),
-      },
+      },*/
       {
         test: /\.(png|jpg|gif)$/,
         use: [
@@ -149,7 +149,7 @@ const config = {
       },
     }),
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
+    //new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
     new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
     //new OpenBrowserPlugin({ url: 'http://localhost:8080' }),
     new webpack.HotModuleReplacementPlugin(),

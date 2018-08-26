@@ -13,22 +13,22 @@ const config = {
   devtool: 'cheap-module-source-map',
 
   entry: [
-    './main.js',
+    './main.jsx',
   ],
 
-  context: resolve(__dirname, 'app'),
+  context: resolve(__dirname, 'frontendSrc'),
 
   output: {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
     path: resolve(__dirname, 'frontendPublic'),
-    publicPath: '',
+    publicPath: resolve(__dirname, 'frontendPublic'),
   },
 
   plugins: [
     new webpack.optimize.ModuleConcatenationPlugin(),
     new HtmlWebpackPlugin({
-      template: `${__dirname}/app/index.html`,
+      template: `${__dirname}/frontendSrc/index.html`,
       filename: 'index.html',
       inject: 'body',
     }),

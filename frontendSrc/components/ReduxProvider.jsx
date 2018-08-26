@@ -1,17 +1,21 @@
 import { Provider } from 'react-redux';
 import reducers from './../reducers/reducers';
-import { createStore, compose, applyMiddleware } from 'redux';
+import { createStore } from 'redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import { SIDE_ELEMENTS } from '../constants/constants';
-import { selectSideElement } from '../actions/actions';
+
 import App from './App';
+
+const initialState = {
+        ticketContract: '',
+        web3: null
+    };
 
 export default class ReduxProvider extends React.Component {
     constructor(props) {
         super(props);
-        this.initialState = {sideElements: SIDE_ELEMENTS};
+        this.initialState = initialState;
         this.store = this.configureStore();
     }
     render() {

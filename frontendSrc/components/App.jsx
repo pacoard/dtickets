@@ -1,20 +1,31 @@
-import React from 'react';
-import img from '../assets/images/react_logo_512x512.png';
+import React from 'react'
 
-const App = () => {
-  return (
-    <div>
-      <h2 id="heading">Hello ReactJS</h2>
-      <img
-        className="image"
-        style={{ margin: '0.5em' }}
-        height="40"
-        width="40"
-        src={img}
-        alt="React Logo"
-      />
-    </div>
-  );
-};
+import NavBar from './NavBar'
+import Web3State from './Web3State'
+import Dashboard from './Dashboard'
+import Search from './Search'
+
+class App extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return (
+			<div>
+				<NavBar />
+				<div className="row" style={{paddingRight: '30px', paddingLeft: '30px'}}>
+					<div className="col-sm-4" style={{paddingRight: '30px', paddingLeft: '30px'}}>
+						<Web3State />
+						<Search />
+					</div>
+					<Dashboard />
+				</div>
+			</div>
+		);
+	}
+}
+
+
 
 export default App;
