@@ -1,14 +1,20 @@
-notes.java
-
-installed_contracts/
-
+# Compiled contracts
 build/
 
 lock.*
 
-contract_object.java
+# Truffle ethpm packages (like node_modules for truffle)
+installed_contracts/
 
-
+# Frontend packages
 node_modules/
 
-frontendBuild/
+# npm debug log
+npm-debug.log
+
+# Bundled react code with webpack
+frontendBuild/reactapp.bundle.js
+
+# Personal files for reference
+notes.java
+contract_object.java

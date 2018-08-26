@@ -1,39 +1,66 @@
 const { resolve } = require('path');
-
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-//const OpenBrowserPlugin = require('open-browser-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const config = {
   stats: {
     maxModules: 0
   },
-  mode: 'development',
-  devtool: 'cheap-module-eval-source-map',
+  mode: 'production',
+  devtool: 'cheap-module-source-map',
 
   entry: [
-    'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:8080',
-    'webpack/hot/only-dev-server',
-    './main.jsx',
+    './main.js',
     './assets/scss/main.scss',
   ],
 
+  context: resolve(__dirname, 'app'),
+
   output: {
-    filename: 'bundle.js',
+    filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].js',
     path: resolve(__dirname, 'frontendPublic'),
     publicPath: '',
   },
 
-  context: resolve(__dirname, 'frontendSrc'),
+  plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new HtmlWebpackPlugin({
+      template: `${__dirname}/app/index.html`,
+      filename: 'index.html',
+      inject: 'body',
+    }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    }),
+    new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
+    new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
+    new CopyWebpackPlugin([{ from: './vendors', to: 'vendors' }]),
+  ],
 
-  devServer: {
-    hot: true,
-    contentBase: resolve(__dirname, 'frontendBuild'),
-    historyApiFallback: true,
-    publicPath: '/'
+  optimization: {
+    runtimeChunk: false,
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true
+      })
+    ]
   },
 
   resolve: {
@@ -43,34 +70,21 @@ const config = {
   module: {
     rules: [
       {
-        enforce: "pre",
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: "eslint-loader"
-      },
-      {
-        test: /\.jsx?$/,
-        loaders: [
-          'babel-loader',
-        ],
-        exclude: /node_modules/,
+        loader: 'babel-loader',
       },
       {
         test: /\.scss$/,
         exclude: /node_modules/,
-        use: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
+        use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
             'css-loader',
-            {
-              loader: 'sass-loader',
-              query: {
-                sourceMap: false,
-              },
-            },
+            { loader: 'sass-loader', query: { sourceMap: false } },
           ],
           publicPath: '../'
-        })),
+        }),
       },
       {
         test: /\.(png|jpg|gif)$/,
@@ -137,24 +151,6 @@ const config = {
       },
     ]
   },
-
-  plugins: [
-    new webpack.NamedModulesPlugin(),
-    new webpack.LoaderOptionsPlugin({
-      test: /\.jsx?$/,
-      options: {
-        eslint: {
-          configFile: resolve(__dirname, '.eslintrc'),
-          cache: false,
-        }
-      },
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new ExtractTextPlugin({ filename: './styles/style.css', disable: false, allChunks: true }),
-    new CopyWebpackPlugin([{ from: 'vendors', to: 'vendors' }]),
-    //new OpenBrowserPlugin({ url: 'http://localhost:8080' }),
-    new webpack.HotModuleReplacementPlugin(),
-  ]
 };
 
 module.exports = config;
