@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import reducers from './reducers/reducers'; 
 import INITIAL_STATE from './constants/constants'
 
+import Web3Provider from 'react-web3-provider';
 
 // Redux wrapper component for the React application
 class ReduxProvider extends React.Component {

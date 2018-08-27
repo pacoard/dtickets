@@ -10,7 +10,7 @@ function web3Reducer(state = INITIAL_STATE, action) {
 			newstate.web3 = action.web3;
 			return newstate;
 			break;
-		default: return state.web3;
+		default: return state;
 	}
 }
 
@@ -22,7 +22,7 @@ function ticketContractReducer(state = INITIAL_STATE, action) {
 			newstate.ticketContract = action.ticketContract;
 			return newstate;
 			break;
-		default: return state.ticketContract;
+		default: return state;
 	}
 }
 
