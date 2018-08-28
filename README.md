@@ -3,6 +3,10 @@ ConsenSys Academy 2018 Final Project: Decentralized marketplace for tickets. Eth
 
 This project shows a proof of concept of a decentralized ticket sale. The tickets can be used for any type of event, and are modeled as ERC721 tokens (see Cryptokitties and CryptoZombies). As the owner of the sale, a user can manage the state of the sale, manipulate its price, add tickets, change metadata and withdraw all the raised funds.
 
+In order to save ether on the deployment of the contracts, an additional IPFS hash field has been added to the TicketSale contract to point to extra metadata. If it's the valid of a text, PDF or any file uploaded to IPFS, it will be possible to access that file clicking on a link in the UI.
+
+This project has been tested with: Ubuntu 14.04, Ubuntu 16.04, Chrome, MetaMask, Ganache.
+
 ## Installation
 
 1. Install the latest versions of NPM, Truffle and Node globally, if you haven't installed them yet.
