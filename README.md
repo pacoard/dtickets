@@ -23,11 +23,17 @@ This project shows a proof of concept of a decentralized ticket sale. The ticket
     truffle install
     ```
 
-4. Compile, deploy and test them. The easiest way is through the Truffle develop console. I recommend having Ganache ready and deploy the contracts to it in order to test them later from the UI.
+4. Compile, deploy and test them. The easiest way is through the Truffle develop console, but I recommend having Ganache ready and deploy the contracts to it in order to test them later from the UI.
     ```javascript
     truffle develop
     > compile // warnings from the installed contracts will appear. It's deprecated code from OpenZeppelin
     > migrate --reset //clean other possible migrations
+    > test
+
+    // Alternatively
+    truffle compile
+    truffle migrate --reset
+    truffle test
     ```
 A note on the tests: Although you can only see 5 tests in total, take into the account the code and the amount of `asserts` and `expects` that there are. The majority of the tests were heavily focused on the contract TicketSale, as the rest of the contracts were imported from OpenZeppelin and are known to be very secure.
 
@@ -39,7 +45,7 @@ A note on the tests: Although you can only see 5 tests in total, take into the a
 
 6. Start Webpack to be able to access the UI from the browser.
     ```javascript
-    npm install
+    npm start
     ```
 If this this doesn't work for any reason, please do not hesitate to contact me. I have an EC2 instance in AWS ready to serve the UI. Shoot me a message to <pacoard@gmail.com> and I'll give that server a kick.
 
