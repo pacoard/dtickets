@@ -1,25 +1,49 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { setTicketContractAction } from '../actions/actions'
+import { setAccountAction, setTicketContractAction } from '../actions/actions'
 
-import getWeb3 from '../utils/getWeb3'
+import getEth from '../utils/getEth'
+
+
+import * as TicketContractData from '../utils/TicketOwnership.json'
 
 class Search extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
+		this.state = {
+			eth: null,
+			ticketContract: '',
+			searchState: 'No contract'
+		}
+		this.handleChange = this.handleChange.bind(this)
+		this.enterContract = this.enterContract.bind(this)
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		console.log('<Search /> componentDidMount()');
-
-		/*getWeb3.then(results => {
-			this.setState({web3: results.web3})
-			// Instantiate contract once web3 provided.
-			//this.instantiateContract()
-		}).catch(() => {
-			console.log('Error finding web3.')
-		});*/
+		this.setState({
+			eth: (await getEth).eth
+		})
+	}
+	handleChange(e) {
+		this.setState({ticketContract: e.target.value});
+	}
+	enterContract(e) {
+		if(e.keyCode == 13) { //Enter key was pressed
+			this.setState({searchState: 'Loading...'})
+			const TicketContract = this.state.eth.contract(TicketContractData.abi, TicketContractData.deployedBytecode);
+			const ticketContract = TicketContract.at(this.state.ticketContract)
+			
+			ticketContract.ipfsMetaData().then((result) => {
+				this.setState({searchState: 'Ticket Sale contract found!'})
+				//Notify the rest of the application that a valid contract was entered
+				this.props.setTicketContract(this.state.ticketContract)
+				this.props.notifyDashboard(this.state.ticketContract)
+			}).catch((err) => {
+				this.setState({searchState: 'No valid contract found.'})
+			})
+		} 
 	}
 	render() {
 		return (
@@ -31,10 +55,13 @@ class Search extends React.Component {
 					<div className="panel-body">
 							<div className="form-group row">
 								<div className="col-10">
-									<input className="form-control" type="search" placeholder="Enter ticket contract address" id="example-search-input"/>
+									<input 	value={this.state.ticketContract} 
+											onChange={this.handleChange}
+											onKeyDown={this.enterContract} 
+											className="form-control" type="search" placeholder="Enter ticket contract address" id="example-search-input"/>
 								</div>
 							</div>
-							<p><strong>Loading...</strong></p>
+							<p><strong>{this.state.searchState}</strong></p>
 					</div>
 				</div>
 			</div>
@@ -43,11 +70,13 @@ class Search extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-	ticketContract: state.ticketContract
+	ticketContract: state.ticketContractReducer,
+	account: state.accountReducer,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-	setTicketContract: setTicketContractAction
-});
+const mapDispatchToProps = {
+	setAccount: setAccountAction,
+	setTicketContract: setTicketContractAction,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

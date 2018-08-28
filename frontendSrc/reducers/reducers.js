@@ -2,12 +2,12 @@ import { combineReducers } from 'redux';
 import { INITIAL_STATE } from '../constants/constants';
 
 
-function web3Reducer(state = INITIAL_STATE, action) {
+function accountReducer(state = INITIAL_STATE, action) {
 	switch(action.type) {
-		case 'SET_WEB3':
-			console.log('(action) SET_WEB3');
+		case 'SET_ACCOUNT':
+			console.log('(action) SET_ACCOUNT');
 			let newstate = state;
-			newstate.web3 = action.web3;
+			newstate.account = action.account;
 			return newstate;
 			break;
 		default: return state;
@@ -29,7 +29,7 @@ function ticketContractReducer(state = INITIAL_STATE, action) {
 const reducers = combineReducers(
 	{
 		ticketContract: ticketContractReducer,
-		web3: web3Reducer
+		account: accountReducer
 	}
 );
 

@@ -1,7 +1,7 @@
-export function setWeb3Action(web3) {
+export function setAccountAction(account) {
 	return {
-		type: 'SET_WEB3',
-		web3: web3
+		type: 'SET_ACCOUNT',
+		account: account
 	};
 }
 
@@ -9,5 +9,6 @@ export function setTicketContractAction(ticketContract) {
 	return {
 		type: 'SET_TICKET_CONTRACT',
 		ticketContract: ticketContract
-	}
+	};
 }
+
