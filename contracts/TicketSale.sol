@@ -116,71 +116,49 @@ contract TicketSale is Ownable {
 
 	// ONLY OWNER FUNCTIONS
 	/**
-	  * @notice Generates a unique uint256 ID for the last sold ticket
-	  * @dev Throws if: 
-	  * - not enough ether was sent
-	  * - client would end up having more tickets than allowed
-	  * - there are not enough tickets on sale
-	  * @param _nTickets the number of tickets to buy
-	  * @return keccak256 of msg.sender and the number of sold tickets
+	  * @notice Changes the state of the contract to Sale
 	  */
 	function startSale() external onlyOwner {
 		saleState = SaleState.Sale;
 		emit Sale();
 	}
 	/**
-	  * @notice Generates a unique uint256 ID for the last sold ticket
-	  * @dev Throws if: 
-	  * - not enough ether was sent
-	  * - client would end up having more tickets than allowed
-	  * - there are not enough tickets on sale
-	  * @param _nTickets the number of tickets to buy
-	  * @return keccak256 of msg.sender and the number of sold tickets
+	  * @notice Updates the IPFS hash of this sale
+	  * @param _ipfsMetaData the new IPFS hash
 	  */
 	function setIpfsMetaData(string _ipfsMetaData) external onlyOwner {
 		ipfsMetaData = _ipfsMetaData;
 	}
 	/**
-	  * @notice Generates a unique uint256 ID for the last sold ticket
-	  * @dev Throws if: 
-	  * - not enough ether was sent
-	  * - client would end up having more tickets than allowed
-	  * - there are not enough tickets on sale
-	  * @param _nTickets the number of tickets to buy
-	  * @return keccak256 of msg.sender and the number of sold tickets
+	  * @notice Changes the state of the contract to Closed
 	  */
 	function stopSale() public onlyOwner {
 		saleState = SaleState.Closed;
 		emit Closed();
 	}
 	/**
-	  * @notice Generates a unique uint256 ID for the last sold ticket
-	  * @dev Throws if: 
-	  * - not enough ether was sent
-	  * - client would end up having more tickets than allowed
-	  * - there are not enough tickets on sale
-	  * @param _nTickets the number of tickets to buy
-	  * @return keccak256 of msg.sender and the number of sold tickets
+	  * @notice Updates the price of the tickets
+	  * @param _ticketPrice the new ticket price
 	  */
 	function setTicketPrice(uint256 _ticketPrice) external onlyOwner {
 		ticketPrice = _ticketPrice;
 	}
 
+	/**
+	  * @notice Buys _nTickets for msg.sender
+	  * @dev Throws if: 
+	  * - the total number of tickets overflows maxTickets (uint32)
+	  * @param _nTickets the number of tickets to add to the sale
+	  */
 	function addMoreTickets(uint32 _nTickets) external onlyOwner {
 		// check possible overflow of maxTickets
-		require(maxTickets + _nTickets <= 2**256 - 1);
+		require(maxTickets + _nTickets <= 2**32 - 1);
 		maxTickets += _nTickets;
 	}
 
 	// A way to stop the sale and withdraw all the money
 	/**
-	  * @notice Generates a unique uint256 ID for the last sold ticket
-	  * @dev Throws if: 
-	  * - not enough ether was sent
-	  * - client would end up having more tickets than allowed
-	  * - there are not enough tickets on sale
-	  * @param _nTickets the number of tickets to buy
-	  * @return keccak256 of msg.sender and the number of sold tickets
+	  * @notice Destroys the contract and sends whatever balance it has to the owner
 	  */
 	function kill() external onlyOwner {
 		selfdestruct(owner);
