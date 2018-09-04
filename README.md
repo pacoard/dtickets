@@ -42,7 +42,7 @@ This project has been tested with: Ubuntu 14.04, Ubuntu 16.04, Chrome, MetaMask,
 A note on the tests: Although you can only see 5 tests in total, take into the account the code and the amount of `asserts` and `expects` that there are. The majority of the tests were heavily focused on the contract TicketSale, as the rest of the contracts were imported from OpenZeppelin and are known to be very secure.
 
 
-5. Install the frontend app (takes a few minutes). If you run into errors such as EACCESS or ENOENT, put `asserts` at the beggining of the command. 
+5. Install the frontend app (takes a few minutes). If you run into errors such as EACCESS or ENOENT, put `sudo` at the beggining of the command. 
     ```javascript
     npm install
     ```
@@ -51,6 +51,7 @@ A note on the tests: Although you can only see 5 tests in total, take into the a
     ```javascript
     npm start
     ```
-If this this doesn't work for any reason, please do not hesitate to contact me. I have an EC2 instance in AWS ready to serve the UI. Shoot me a message to <pacoard@gmail.com> and I'll give that server a kick.
+If this this doesn't work for any reason, please do not hesitate to contact me. Shoot me a message to <pacoard@gmail.com>
+I have an EC2 instance in AWS ready to serve the UI: <ec2-18-188-38-180.us-east-2.compute.amazonaws.com:8080>
 
 7. Interact with the smart contracts from the UI. You must use MetaMask + Ganache to interact with the locally deployed contracts.
